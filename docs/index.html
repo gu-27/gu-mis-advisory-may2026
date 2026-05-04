@@ -535,16 +535,12 @@
     </div>
   </div>
 
-  <!-- ── 07. LOOKING AHEAD ──────────────────── -->
+  <!-- ── 07. LOOKING AHEAD + CONVERSATION ──── -->
   <div class="slide" id="s6">
     <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
-    <div class="eyebrow">Context</div>
+    <div class="eyebrow">Context · Board Discussion (~20 min)</div>
     <h1 class="slide-title">Looking Ahead</h1>
     <div class="red-rule"></div>
-
-    <div class="body" style="margin-bottom:1.1rem;">
-      "The restructuring is largely behind us. The next chapter is about identity, positioning, and preparing graduates for a market that is shifting faster than ever."
-    </div>
 
     <div class="section-head" style="margin-top:0;">The Market Reality</div>
     <ul class="reality-list">
@@ -553,19 +549,7 @@
       <li>Tools lowering the barrier to entry and raising the bar for differentiation</li>
     </ul>
 
-    <div class="our-framing">
-      "We will not give up the fundamentals. They are why our students last. But we have a real opportunity to equip students with emerging skills that let them stand out — to come in not just credentialed, but ready to add value in ways their more experienced peers may not yet."
-    </div>
-  </div>
-
-  <!-- ── 08. THE CONVERSATION ───────────────── -->
-  <div class="slide" id="s7">
-    <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
-    <div class="eyebrow">Board Discussion (~20 min)</div>
-    <h1 class="slide-title">Opportunities &amp; Cautions</h1>
-    <div class="red-rule"></div>
-
-    <div class="convo-block primary">
+    <div class="convo-block primary" style="margin-top:1.1rem;">
       <div class="convo-label">Opportunities</div>
       <div class="convo-text">"Looking five years out, as technology shifts and tools mature, what capabilities should an Information Systems graduate have developed? What separates a graduate who stands out from one who blends in? Think across domains: finance, supply chain, healthcare, tech itself."</div>
     </div>
@@ -580,8 +564,8 @@
     </div>
   </div>
 
-  <!-- ── 09. HONORING TA-TAO ───────────────── -->
-  <div class="slide off" id="s8">
+  <!-- ── 08. HONORING TA-TAO ───────────────── -->
+  <div class="slide off" id="s7">
     <div class="eyebrow">With gratitude</div>
     <h1 class="slide-title" style="font-size:clamp(1.9rem,4vw,2.8rem);margin-bottom:.5rem;">Honoring Ta-Tao Chuang</h1>
     <div class="red-rule"></div>
@@ -659,7 +643,7 @@
   </div>
 
   <!-- ── 09. THANK YOU ─────────────────────── -->
-  <div class="slide navy center" id="s9">
+  <div class="slide navy center" id="s8">
     <div style="font-size:clamp(3.5rem,10vw,7rem);font-weight:900;color:white;line-height:1.1;letter-spacing:-.03em;margin-bottom:.75rem;">Thank You,<br>Ta-Tao.</div>
     <div style="width:64px;height:4px;background:var(--red);border-radius:3px;margin:0 auto 1.75rem;"></div>
     <div style="font-size:clamp(1rem,2vw,1.3rem);color:rgba(255,255,255,.55);font-weight:500;letter-spacing:.02em;">25 years. Countless students. One of a kind.</div>
@@ -670,7 +654,7 @@
 <!-- ── NAV BAR ────────────────────────────────── -->
 <div id="nav-bar">
   <button class="nbtn" id="btn-prev" onclick="go(-1)">← Prev</button>
-  <span id="counter">1 / 9</span>
+  <span id="counter">1 / 8</span>
   <button class="nbtn" id="btn-next" onclick="go(1)">Next →</button>
   <button id="menu-btn" onclick="toggleMenu()">Slides ≡</button>
 </div>
@@ -695,11 +679,10 @@
     'New Curriculum',
     'Who We Are',
     'Looking Ahead',
-    'Opportunities & Cautions',
     'Honoring Ta-Tao Chuang',
     'Thank You, Ta-Tao'
   ];
-  const TOTAL = 9;
+  const TOTAL = 8;
   let cur = 1;
 
   function unlock() {
