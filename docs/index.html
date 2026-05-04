@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIS Advisory Board — May 4, 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #002147;
+      --navy-lt: #1a3a60;
+      --red:     #cc0000;
+      --white:   #ffffff;
+      --off:     #f8fafc;
+      --light:   #f0f3f7;
+      --text:    #0f172a;
+      --muted:   #64748b;
+      --border:  #e2e8f0;
+      --pad: clamp(1.75rem, 5vw, 3.5rem);
+    }
+
+    html, body { height: 100%; font-family: 'Inter', system-ui, sans-serif; background: var(--navy); overflow: hidden; }
+
+    /* ── GATE ───────────────────────────────────────── */
+    #gate {
+      position: fixed; inset: 0; background: var(--navy);
+      display: flex; align-items: center; justify-content: center; z-index: 999;
+    }
+    .gate-card {
+      background: white; border-radius: 16px; padding: 2.5rem 2rem;
+      width: min(340px, 90vw); text-align: center;
+    }
+    .gate-mark {
+      display: inline-block; background: var(--navy); color: white;
+      font-size: .58rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+      padding: .28rem .65rem; border-radius: 4px; margin-bottom: 1.5rem;
+    }
+    .gate-card h2 { font-size: 1.1rem; font-weight: 800; color: var(--navy); margin-bottom: .3rem; }
+    .gate-card p  { font-size: .78rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .gate-input {
+      width: 100%; padding: .7rem 1rem; border: 1.5px solid var(--border);
+      border-radius: 9px; font-family: inherit; font-size: .9rem;
+      text-align: center; letter-spacing: .12em; outline: none; margin-bottom: .6rem;
+    }
+    .gate-input:focus { border-color: var(--navy); }
+    .gate-btn {
+      width: 100%; padding: .75rem; background: var(--navy); color: white;
+      border: none; border-radius: 9px; font-family: inherit; font-size: .9rem;
+      font-weight: 700; cursor: pointer;
+    }
+    .gate-btn:hover { background: var(--navy-lt); }
+    .gate-err { font-size: .72rem; color: var(--red); margin-top: .5rem; display: none; }
+
+    /* ── DECK ───────────────────────────────────────── */
+    #deck { position: fixed; inset: 0 0 48px 0; }
+
+    .slide {
+      position: absolute; inset: 0; overflow-y: auto;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+      background: var(--white);
+      padding: var(--pad);
+      display: flex; flex-direction: column;
+    }
+    .slide.active  { opacity: 1; pointer-events: auto; }
+    .slide.navy    { background: var(--navy); color: white; }
+    .slide.off     { background: var(--off); }
+    .slide.center  { align-items: center; justify-content: center; text-align: center; }
+
+    /* ── NAV BAR ────────────────────────────────────── */
+    #nav-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 48px;
+      background: var(--navy); display: flex; align-items: center;
+      justify-content: center; gap: 1.25rem; z-index: 100;
+    }
+    .nbtn {
+      background: none; border: 1px solid rgba(255,255,255,.2); color: white;
+      padding: .28rem .85rem; border-radius: 6px; font-family: inherit;
+      font-size: .75rem; font-weight: 600; cursor: pointer; transition: all .15s;
+    }
+    .nbtn:hover:not(:disabled) { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.4); }
+    .nbtn:disabled { opacity: .3; cursor: default; }
+    #counter { font-size: .7rem; font-weight: 700; color: rgba(255,255,255,.45); min-width: 48px; text-align: center; letter-spacing: .05em; }
+    #menu-btn {
+      position: absolute; right: 1rem;
+      background: none; border: none; color: rgba(255,255,255,.35);
+      font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+      cursor: pointer; padding: .3rem .4rem;
+    }
+    #menu-btn:hover { color: white; }
+
+    /* ── SLIDE MENU ─────────────────────────────────── */
+    #slide-menu {
+      position: fixed; inset: 0; background: rgba(0,0,0,.65);
+      z-index: 200; display: none; justify-content: flex-end;
+    }
+    #slide-menu.open { display: flex; }
+    .menu-panel {
+      background: white; width: min(300px, 85vw); height: 100%;
+      overflow-y: auto; padding: 1.5rem 1rem;
+    }
+    .menu-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .menu-hd h3 { font-size: .8rem; font-weight: 800; color: var(--navy); }
+    .menu-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--muted); line-height: 1; }
+    .mitem {
+      display: flex; align-items: flex-start; gap: .65rem;
+      padding: .6rem .5rem; border-radius: 7px; cursor: pointer; transition: background .12s;
+    }
+    .mitem:hover { background: var(--light); }
+    .mitem.cur  { background: #eef2f8; }
+    .mnum { font-size: .58rem; font-weight: 800; color: var(--muted); min-width: 18px; padding-top: .12rem; }
+    .mitem.cur .mnum { color: var(--navy); }
+    .mtitle { font-size: .78rem; font-weight: 600; line-height: 1.4; color: var(--text); }
+    .mitem.cur .mtitle { color: var(--navy); font-weight: 700; }
+
+    /* ── SHARED COMPONENTS ──────────────────────────── */
+    .gu-mark {
+      display: inline-flex; align-items: center; gap: .45rem;
+      font-size: .58rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(255,255,255,.6); margin-bottom: 2rem;
+    }
+    .gu-mark-bar { width: 16px; height: 2.5px; background: var(--red); border-radius: 2px; }
+    .gu-mark.dark { color: var(--muted); }
+
+    .eyebrow {
+      font-size: .58rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--red); margin-bottom: .75rem;
+    }
+
+    .slide-title {
+      font-size: clamp(1.6rem, 3.8vw, 2.6rem);
+      font-weight: 900; line-height: 1.15; color: var(--navy); margin-bottom: .5rem;
+    }
+    .slide.navy .slide-title { color: white; }
+
+    .slide-sub {
+      font-size: clamp(.85rem, 1.5vw, 1rem);
+      color: var(--muted); line-height: 1.6;
+    }
+    .slide.navy .slide-sub { color: rgba(255,255,255,.55); }
+
+    .red-rule { width: 44px; height: 3px; background: var(--red); border-radius: 2px; margin: 1.25rem 0; }
+    .red-rule.center { margin: 1.25rem auto; }
+
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    .body { font-size: clamp(.85rem, 1.4vw, .95rem); line-height: 1.8; color: var(--text); max-width: 660px; }
+
+    .quote {
+      border-left: 3px solid var(--navy); padding: .9rem 1.25rem;
+      font-size: clamp(.85rem, 1.4vw, .95rem); line-height: 1.8; color: var(--text);
+      background: var(--light); border-radius: 0 8px 8px 0; max-width: 660px;
+    }
+
+    .section-head { font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--navy); margin-bottom: .65rem; margin-top: 1.5rem; }
+
+    .agenda { list-style: none; max-width: 560px; margin-top: 1rem; }
+    .agenda li { display: flex; gap: .85rem; padding: .5rem 0; border-bottom: 1px solid var(--border); font-size: .88rem; line-height: 1.5; }
+    .agenda li:last-child { border-bottom: none; }
+    .anum { font-size: .58rem; font-weight: 800; color: var(--red); padding-top: .2rem; min-width: 14px; }
+
+    .note-chip {
+      display: inline-block; background: var(--light); border: 1px solid var(--border);
+      border-radius: 7px; padding: .45rem .9rem; font-size: .78rem; color: var(--muted); margin-top: 1rem;
+    }
+    .note-chip strong { color: var(--navy); }
+
+    .link-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .6rem 1.25rem; background: var(--navy); color: white;
+      text-decoration: none; border-radius: 8px; font-size: .82rem; font-weight: 700;
+      transition: background .15s; margin-top: 1rem; width: fit-content;
+    }
+    .link-btn:hover { background: var(--navy-lt); }
+    .link-btn-note { font-size: .7rem; color: var(--muted); font-style: italic; margin-top: .45rem; }
+
+    .group-pair { display: flex; gap: .85rem; flex-wrap: wrap; margin-top: .85rem; }
+    .group-chip {
+      padding: .55rem 1.1rem; border: 2px solid var(--navy); border-radius: 8px;
+      font-size: .82rem; font-weight: 700; color: var(--navy); background: white;
+    }
+
+    /* Slide 5 — Who We Are */
+    .anchor-line {
+      font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900; color: var(--navy);
+      line-height: 1.2; letter-spacing: -.02em;
+    }
+    .pillars {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .85rem;
+      max-width: 620px; margin: 0 auto 1.5rem;
+    }
+    .pillar {
+      padding: .95rem 1.1rem; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: .85rem; font-weight: 500; line-height: 1.6; color: var(--text);
+      background: var(--off);
+    }
+    .future-note { font-size: .8rem; color: var(--muted); font-style: italic; max-width: 500px; margin: 0 auto; line-height: 1.7; }
+
+    /* Slide 6 — Looking Ahead */
+    .reality-list { list-style: none; margin: .85rem 0 1rem; max-width: 600px; }
+    .reality-list li {
+      padding: .5rem 0 .5rem 1.35rem; position: relative;
+      font-size: .88rem; color: var(--text); line-height: 1.65;
+      border-bottom: 1px solid var(--border);
+    }
+    .reality-list li:last-child { border-bottom: none; }
+    .reality-list li::before {
+      content: ''; position: absolute; left: 0; top: .95rem;
+      width: 5px; height: 5px; border-radius: 50%; background: var(--muted);
+    }
+    .our-framing {
+      border-left: 3px solid var(--red); padding: .85rem 1.25rem;
+      font-size: .9rem; line-height: 1.8; color: var(--text);
+      background: #fff5f5; border-radius: 0 8px 8px 0; max-width: 660px; margin-top: 1rem;
+    }
+
+    /* Slide 7 — Conversation */
+    .convo-block {
+      border-radius: 12px; padding: 1.4rem 1.5rem; max-width: 680px; margin-bottom: .85rem;
+    }
+    .convo-block.primary   { background: #eef3fb; border: 1.5px solid #c1d2e8; }
+    .convo-block.secondary { background: var(--light); border: 1.5px solid var(--border); }
+    .convo-label { font-size: .6rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .55rem; }
+    .convo-block.primary .convo-label   { color: var(--navy); }
+    .convo-block.secondary .convo-label { color: var(--muted); }
+    .convo-text { font-size: .88rem; line-height: 1.8; color: var(--text); }
+    .convo-note { font-size: .78rem; font-style: italic; color: var(--muted); max-width: 660px; margin-top: .5rem; line-height: 1.65; }
+
+    /* Slide 8 — Honoring */
+    .photo-box {
+      width: 130px; height: 160px; background: var(--light);
+      border: 2px dashed var(--border); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; color: var(--muted); text-align: center;
+      line-height: 1.5; margin: 0 auto 1.75rem;
+    }
+    .tribute p {
+      font-size: clamp(1rem, 2.2vw, 1.2rem); font-weight: 600;
+      color: var(--navy); line-height: 2.1; text-align: center;
+    }
+
+    /* Slide 9 — Stories */
+    .story-card { max-width: 620px; }
+    .story-sec { padding: 1.1rem 0; border-bottom: 1px solid var(--border); }
+    .story-sec:last-child { border-bottom: none; }
+    .story-label { font-size: .6rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--red); margin-bottom: .45rem; }
+    .story-text { font-size: .9rem; line-height: 1.75; color: var(--text); }
+    .story-text em { color: var(--muted); }
+    .close-note { font-size: .8rem; color: var(--muted); font-style: italic; margin-top: 1.25rem; }
+
+    /* Slide 10 — Close */
+    .commit-list { list-style: none; max-width: 540px; margin-top: 1.25rem; }
+    .commit-list li { display: flex; gap: .85rem; padding: .65rem 0; font-size: .88rem; line-height: 1.65; border-bottom: 1px solid var(--border); }
+    .commit-list li:last-child { border-bottom: none; }
+    .cicon { color: var(--navy); font-size: .8rem; flex-shrink: 0; padding-top: .1rem; }
+
+    @media (max-width: 580px) {
+      .pillars { grid-template-columns: 1fr; }
+      :root { --pad: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── GATE ──────────────────────────────────────── -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-mark">Gonzaga University · MIS</div>
+    <h2>Advisory Board Meeting</h2>
+    <p>May 4, 2026 — Faculty & Board Portal</p>
+    <input type="password" class="gate-input" id="gate-input" placeholder="Password" onkeydown="if(event.key==='Enter')unlock()">
+    <button class="gate-btn" onclick="unlock()">Enter</button>
+    <div class="gate-err" id="gate-err">Incorrect password.</div>
+  </div>
+</div>
+
+<!-- ── DECK ──────────────────────────────────────── -->
+<div id="deck">
+
+  <!-- ── 01. TITLE ─────────────────────────────── -->
+  <div class="slide navy center" id="s1">
+    <div class="gu-mark"><div class="gu-mark-bar"></div>Gonzaga University</div>
+    <div class="slide-title" style="font-size:clamp(1.8rem,4.5vw,3rem);margin-bottom:1rem;">MIS Discipline</div>
+    <div style="font-size:clamp(1rem,2.5vw,1.4rem);font-weight:700;color:rgba(255,255,255,.75);margin-bottom:.75rem;">Faculty &amp; Advisory Board Meeting</div>
+    <div style="font-size:clamp(.82rem,1.4vw,.95rem);color:rgba(255,255,255,.45);letter-spacing:.04em;margin-bottom:2rem;">Reconnecting · Restructuring · Looking Forward</div>
+    <div style="width:44px;height:3px;background:var(--red);border-radius:2px;margin:0 auto 2rem;"></div>
+    <div style="font-size:.82rem;color:rgba(255,255,255,.5);line-height:2;">
+      May 4, 2026 &nbsp;·&nbsp; 8:00–9:30 AM<br>
+      In Person + Virtual
+    </div>
+  </div>
+
+  <!-- ── 02. WELCOME & INTRODUCTIONS ───────────── -->
+  <div class="slide" id="s2">
+    <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
+    <div class="eyebrow">Welcome</div>
+    <h1 class="slide-title">Welcome &amp; Introductions</h1>
+    <div class="red-rule"></div>
+
+    <div class="quote">
+      "Thank you for making time this morning. It's been a while since we've gathered as a group, and we have meaningful updates to share. Today is about reconnecting, walking you through the work we've done, and — importantly — opening the floor to your insight as we shape what comes next."
+    </div>
+
+    <div class="section-head">Agenda</div>
+    <ol class="agenda">
+      <li><span class="anum">1</span>Introductions</li>
+      <li><span class="anum">2</span>Discipline lead transition</li>
+      <li><span class="anum">3</span>Program updates — curriculum &amp; student groups</li>
+      <li><span class="anum">4</span>Vision &amp; next steps — a conversation about the future</li>
+      <li><span class="anum">5</span>Honoring Ta-Tao Chuang</li>
+    </ol>
+
+    <div class="note-chip">We'll close with informal time — please plan to stay if you can.</div>
+    <div class="note-chip" style="margin-top:.5rem;">Welcome, <strong>Xavier Collantes (AT&amp;T)</strong> — our newest board member.</div>
+  </div>
+
+  <!-- ── 03. DISCIPLINE LEAD TRANSITION ────────── -->
+  <div class="slide center" id="s3" style="background:var(--off);">
+    <div class="eyebrow">A Note</div>
+    <div style="font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:800;color:var(--navy);max-width:560px;line-height:1.4;margin-bottom:1.5rem;">Discipline Lead Transition</div>
+    <div class="red-rule center"></div>
+    <div class="body" style="max-width:520px;text-align:center;">
+      "The discipline has new faculty leadership, and today's conversation reflects a fresh moment to align on where we're going."
+    </div>
+  </div>
+
+  <!-- ── 04. PROGRAM UPDATES ────────────────────── -->
+  <div class="slide" id="s4">
+    <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
+    <div class="eyebrow">Section A</div>
+    <h1 class="slide-title">Program Updates</h1>
+    <div class="red-rule"></div>
+
+    <div class="section-head">Curriculum Restructure</div>
+    <div class="body" style="margin-bottom:.85rem;">
+      We've completed a meaningful restructure of our curriculum. The core fundamental skills — data, programming, systems analysis — are now condensed into a tighter, more integrated foundation. Most importantly, we've reduced the overlap between concentrations, creating clearer differentiation between MIS and Business Analytics and opening space for emerging technology coursework.
+    </div>
+    <a href="https://gu-mis.pages.dev" target="_blank" class="link-btn">Explore the curriculum →</a>
+    <div class="link-btn-note">We'll briefly walk this site live — proposal details, structure, and rationale are all there.</div>
+
+    <div class="divider"></div>
+
+    <div class="section-head">Student Groups</div>
+    <div class="group-pair">
+      <div class="group-chip">Gonzaga Sport Consulting Group (GSCG)</div>
+      <div class="group-chip">Zag Business and Tech (ZBT)</div>
+    </div>
+  </div>
+
+  <!-- ── 05. WHO WE ARE ─────────────────────────── -->
+  <div class="slide center" id="s5">
+    <div class="eyebrow">Identity</div>
+    <div class="anchor-line">We are the systems that run business.</div>
+    <div class="red-rule center"></div>
+
+    <div class="pillars">
+      <div class="pillar">We learn and apply emerging technologies.</div>
+      <div class="pillar">We have the foundation to develop, deploy, and maintain technological solutions.</div>
+      <div class="pillar">We have the foundation to evaluate existing and emerging technology.</div>
+      <div class="pillar">We have the foundation to predict where technology is going.</div>
+    </div>
+
+    <div class="future-note">
+      "As we sharpen this identity, we're also exploring whether the discipline name itself — Information Systems — might better signal who we are to students and the university. That conversation is ahead of us."
+    </div>
+  </div>
+
+  <!-- ── 06. LOOKING AHEAD ──────────────────────── -->
+  <div class="slide" id="s6">
+    <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
+    <div class="eyebrow">Context</div>
+    <h1 class="slide-title">Looking Ahead</h1>
+    <div class="red-rule"></div>
+
+    <div class="body" style="margin-bottom:1rem;">
+      "The hardest part — restructuring the curriculum — is largely behind us. The next chapter is about identity, positioning, and preparing graduates for a market that's shifting faster than ever."
+    </div>
+
+    <div class="section-head">The Market Reality</div>
+    <ul class="reality-list">
+      <li>Tougher entry-level job market for graduates</li>
+      <li>Industry professionals losing roles, increasing competition</li>
+      <li>Tools lowering the barrier to entry — but raising the bar for differentiation</li>
+    </ul>
+
+    <div class="our-framing">
+      "We will not give up the fundamentals. They are why our students last. But we have a real opportunity to equip students with emerging skills that let them differentiate — to come in not just credentialed, but ready to add value in ways their more experienced peers may not yet."
+    </div>
+  </div>
+
+  <!-- ── 07. THE CONVERSATION ───────────────────── -->
+  <div class="slide" id="s7">
+    <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
+    <div class="eyebrow">Board Discussion (~20 min)</div>
+    <h1 class="slide-title">Opportunities &amp; Cautions</h1>
+    <div class="red-rule"></div>
+
+    <div class="convo-block primary">
+      <div class="convo-label">Opportunities →</div>
+      <div class="convo-text">"Looking five years out — as technology shifts and tools mature — what capabilities should an Information Systems graduate have developed? What separates a graduate who differentiates themselves from one who blends in? Think across domains: finance, supply chain, healthcare, tech itself."</div>
+    </div>
+
+    <div class="convo-block secondary">
+      <div class="convo-label">Cautions →</div>
+      <div class="convo-text">"What would you caution us against? Where do we risk losing depth if we chase what's trending?"</div>
+    </div>
+
+    <div class="convo-note">
+      We're particularly interested in how to build out the Information Systems concentration — that's where we have the most flexibility for emerging coursework.
+    </div>
+  </div>
+
+  <!-- ── 08. HONORING TA-TAO ────────────────────── -->
+  <div class="slide off center" id="s8">
+    <div class="eyebrow">With gratitude</div>
+    <h1 class="slide-title" style="font-size:clamp(1.5rem,3.5vw,2.2rem);margin-bottom:1.5rem;">Honoring Ta-Tao Chuang</h1>
+    <div class="photo-box">[ Photo ]</div>
+    <div class="tribute">
+      <p>25 years of amazing contributions.</p>
+      <p>A solid foundation for our future success.</p>
+    </div>
+  </div>
+
+  <!-- ── 09. STORIES & REFLECTIONS ─────────────── -->
+  <div class="slide" id="s9">
+    <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
+    <div class="eyebrow">Closing</div>
+    <h1 class="slide-title">Stories, Reflections, What's Ahead</h1>
+    <div class="red-rule"></div>
+
+    <div class="story-card">
+      <div class="story-sec">
+        <div class="story-label">A Personal Note</div>
+        <div class="story-text"><em>[I will share verbally.]</em></div>
+      </div>
+
+      <div class="story-sec">
+        <div class="story-label">Around the Room</div>
+        <div class="story-text">"We've collected messages and reflections from faculty who couldn't be here today. We'll also open the floor — if you'd like to share a memory or a thank-you, please do."</div>
+      </div>
+
+      <div class="story-sec">
+        <div class="story-label">Ta-Tao, What's Ahead?</div>
+        <div class="story-text">"Ta-Tao, this next chapter is yours. We'd love to hear about it — where are you headed? What are you most looking forward to?"</div>
+      </div>
+    </div>
+
+    <div class="close-note">We'll wrap the formal meeting around 9:15 AM and leave time for informal conversation. Please stay if you can.</div>
+  </div>
+
+  <!-- ── 10. CLOSE ──────────────────────────────── -->
+  <div class="slide" id="s10">
+    <div class="gu-mark dark"><div class="gu-mark-bar"></div>Gonzaga University · MIS</div>
+    <div class="eyebrow">Thank You</div>
+    <h1 class="slide-title">See You on the Other Side</h1>
+    <div class="red-rule"></div>
+
+    <div class="body" style="margin-bottom:1.5rem;">
+      "Thank you for showing up this morning — for Ta-Tao, for the program, and for the conversation ahead. We'll follow up with a summary of today's discussion and concrete next steps within the week. In the meantime, please stay and connect with Ta-Tao and each other."
+    </div>
+
+    <div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--navy);margin-bottom:.5rem;">Commitments</div>
+    <ul class="commit-list">
+      <li><span class="cicon">→</span>Summary memo within one week</li>
+      <li><span class="cicon">→</span>Continued engagement — let's discuss the right cadence going forward</li>
+      <li><span class="cicon">→</span>Open invitation: guest speakers, project sponsors, hiring partners — let's talk</li>
+    </ul>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- ── NAV BAR ────────────────────────────────────── -->
+<div id="nav-bar">
+  <button class="nbtn" id="btn-prev" onclick="go(-1)">← Prev</button>
+  <span id="counter">1 / 10</span>
+  <button class="nbtn" id="btn-next" onclick="go(1)">Next →</button>
+  <button id="menu-btn" onclick="toggleMenu()">Slides ≡</button>
+</div>
+
+<!-- ── SLIDE MENU ─────────────────────────────────── -->
+<div id="slide-menu" onclick="closeMenu()">
+  <div class="menu-panel" onclick="event.stopPropagation()">
+    <div class="menu-hd">
+      <h3>Slides</h3>
+      <button class="menu-close" onclick="closeMenu()">✕</button>
+    </div>
+    <div id="menu-list"></div>
+  </div>
+</div>
+
+<script>
+  const PASS   = 'mis2026';
+  const TITLES = [
+    'Title / Welcome',
+    'Welcome & Introductions',
+    'Discipline Lead Transition',
+    'Program Updates',
+    'Who We Are',
+    'Looking Ahead',
+    'The Conversation',
+    'Honoring Ta-Tao Chuang',
+    'Stories & Reflections',
+    'Close'
+  ];
+  const TOTAL = 10;
+  let cur = 1;
+
+  // ── Gate ──────────────────────────────────────────
+  function unlock() {
+    if (document.getElementById('gate-input').value === PASS) {
+      localStorage.setItem('mis_board_auth', 'true');
+      document.getElementById('gate').style.display = 'none';
+      initDeck();
+    } else {
+      document.getElementById('gate-err').style.display = 'block';
+      document.getElementById('gate-input').value = '';
+    }
+  }
+  document.getElementById('gate-input').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+  if (localStorage.getItem('mis_board_auth') === 'true') {
+    document.getElementById('gate').style.display = 'none';
+  }
+
+  // ── Navigation ────────────────────────────────────
+  function showSlide(n) {
+    for (let i = 1; i <= TOTAL; i++) {
+      const el = document.getElementById('s' + i);
+      el.classList.toggle('active', i === n);
+      if (i === n) el.scrollTop = 0;
+    }
+    cur = n;
+    document.getElementById('counter').textContent = `${n} / ${TOTAL}`;
+    document.getElementById('btn-prev').disabled = (n === 1);
+    document.getElementById('btn-next').disabled = (n === TOTAL);
+    buildMenu();
+  }
+
+  function go(dir) {
+    const next = cur + dir;
+    if (next >= 1 && next <= TOTAL) showSlide(next);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown'  || e.key === ' ')   { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                        { e.preventDefault(); go(-1); }
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  // ── Menu ──────────────────────────────────────────
+  function buildMenu() {
+    document.getElementById('menu-list').innerHTML = TITLES.map((t, i) => {
+      const n = i + 1;
+      return `<div class="mitem ${n === cur ? 'cur' : ''}" onclick="jumpTo(${n})">
+        <span class="mnum">${n}</span>
+        <span class="mtitle">${t}</span>
+      </div>`;
+    }).join('');
+  }
+  function jumpTo(n) { showSlide(n); closeMenu(); }
+  function toggleMenu() { document.getElementById('slide-menu').classList.toggle('open'); buildMenu(); }
+  function closeMenu()  { document.getElementById('slide-menu').classList.remove('open'); }
+
+  // ── Init ──────────────────────────────────────────
+  function initDeck() { showSlide(1); }
+  if (localStorage.getItem('mis_board_auth') === 'true') initDeck();
+</script>
+</body>
+</html>
