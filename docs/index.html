@@ -443,7 +443,8 @@
     <div class="red-rule"></div>
 
     <div style="display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap;">
-      <div class="photo-box" style="margin:0;flex-shrink:0;">[ Photo ]</div>
+      <img id="tatao-photo" src="img/tatao.jpg" alt="Ta-Tao Chuang" style="width:130px;height:160px;object-fit:cover;object-position:center top;border-radius:10px;flex-shrink:0;margin:0;" onerror="this.style.display='none';document.getElementById('tatao-ph').style.display='flex';">
+      <div id="tatao-ph" class="photo-box" style="margin:0;flex-shrink:0;display:none;">[ Photo ]</div>
       <div style="display:flex;flex-direction:column;justify-content:center;gap:.4rem;">
         <div style="font-size:clamp(1.05rem,2vw,1.25rem);font-weight:700;color:var(--navy);">25 years of amazing contributions.</div>
         <div style="font-size:clamp(1.05rem,2vw,1.25rem);font-weight:700;color:var(--navy);">A solid foundation for our future success.</div>
@@ -452,42 +453,38 @@
 
     <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.85rem;">From colleagues</div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;align-items:stretch;">
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"Badminton runs in his veins. You made information systems feel less scary. As long as you keep playing, I know where to find you."</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"Badminton runs in his veins. He made information systems feel less scary. As long as he keeps playing, I know where to find him."</div>
       </div>
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"Who is going to look after my health now? I guess I'll stock tea, apples, and good vibes in the office."</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"Who is going to look after my health now? I guess I'll stock tea, apples, and good vibes in the office."</div>
       </div>
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"Your tender and genuine heart won me over from day one. I am honored to call you colleague and friend. Go play now!"</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"Your tender and genuine heart won me over from day one. I am honored to call you colleague and friend. Go play now!"</div>
       </div>
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"I told you I was cold my first semester and you told me to take up skiing because it made winters more fun. That's just who you are."</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"I told him I was cold my first semester. He told me to take up skiing because it made winters more fun. That's just who he is."</div>
       </div>
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"There is no better advocate for travel. He always comes back with the most amazing stories, photos, and gifts."</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"He worked tirelessly to connect me with colleagues in Taiwan. Two collaborations came out of that. He just wanted good things for people."</div>
       </div>
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"I recall him working tirelessly to connect me with colleagues in Taiwan. Two collaborations came out of that trip. He just wanted good things for people."</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"Your perspective, your willingness to share, your concern for students. It made a real difference for me. We will miss you."</div>
       </div>
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"Your perspective, your willingness to share, your concern for students. It made a difference for me. We will miss you."</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"He often checks in to see how you're doing and always has a great story to share. One of the good ones."</div>
       </div>
 
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"Such a dedicated and passionate educator. I hope this next chapter gives you plenty of time for all the things you love."</div>
-      </div>
-
-      <div style="background:white;border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:0 0 10px 10px;padding:.9rem 1rem;">
-        <div style="font-size:.88rem;line-height:1.7;color:var(--text);font-style:italic;">"You have always been helpful, kind, and very witty. I will miss your positive energy and zest for life."</div>
+      <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:0 0 10px 10px;padding:1.1rem 1rem;display:flex;align-items:flex-start;">
+        <div style="font-size:.95rem;line-height:1.75;color:var(--text);font-style:italic;">"Helpful, kind, and very witty. I will miss your positive energy and zest for life."</div>
       </div>
 
     </div>
